@@ -420,6 +420,78 @@ body {
   100% { transform: translateX(-50%); }
 }
 
+/* ---------- factory entry curtain ----------
+   Colourful gradient that rises out of the bottom of the viewport during the
+   hero -> manufacturing handoff, then dissolves. */
+
+.factory-curtain__field {
+  background:
+    radial-gradient(120% 78% at 50% 118%, rgba(0, 229, 255, 0.5) 0%, rgba(0, 229, 255, 0) 58%),
+    radial-gradient(90% 62% at 18% 112%, rgba(139, 123, 255, 0.62) 0%, rgba(139, 123, 255, 0) 60%),
+    radial-gradient(90% 62% at 84% 108%, rgba(77, 255, 176, 0.4) 0%, rgba(77, 255, 176, 0) 62%),
+    linear-gradient(
+      to top,
+      #04060a 0%,
+      rgba(4, 6, 10, 0.92) 14%,
+      rgba(139, 123, 255, 0.34) 34%,
+      rgba(0, 229, 255, 0.26) 56%,
+      rgba(4, 6, 10, 0.4) 80%,
+      rgba(4, 6, 10, 0) 100%
+    );
+  animation: curtainBreathe 7s ease-in-out infinite alternate;
+}
+
+@keyframes curtainBreathe {
+  0% { filter: saturate(0.86) brightness(0.92); transform: scaleY(1); }
+  100% { filter: saturate(1.18) brightness(1.08); transform: scaleY(1.035); }
+}
+
+/* light streaks falling into the bay — sells the sense of descent */
+.factory-streak {
+  background: linear-gradient(
+    to top,
+    rgba(0, 229, 255, 0) 0%,
+    rgba(0, 229, 255, 0.55) 45%,
+    rgba(186, 246, 255, 0.85) 50%,
+    rgba(0, 229, 255, 0) 100%
+  );
+  animation: streakFall linear infinite;
+}
+
+@keyframes streakFall {
+  0% { transform: translateY(-24vh) scaleY(0.4); opacity: 0; }
+  18% { opacity: 0.85; }
+  82% { opacity: 0.85; }
+  100% { transform: translateY(112vh) scaleY(1.1); opacity: 0; }
+}
+
+/* glowing rule riding the top edge of the rising gradient */
+.factory-edge {
+  box-shadow:
+    0 0 18px rgba(0, 229, 255, 0.75),
+    0 0 46px rgba(139, 123, 255, 0.5);
+  animation: edgePulse 1.9s ease-in-out infinite;
+}
+
+@keyframes edgePulse {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+
+.factory-word {
+  animation: factoryWord 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes factoryWord {
+  from { opacity: 0; transform: translateY(0.9em) scale(0.94); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+@keyframes factoryChevron {
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+
 /* ---------- scan line on robot inspect ---------- */
 
 .scan-overlay {
@@ -441,7 +513,12 @@ body {
   .shimmer-line::before,
   .spin-slow,
   .twin-link__pulse,
-  .ticker-track {
+  .ticker-track,
+  .factory-curtain__field,
+  .factory-streak,
+  .factory-edge,
+  .factory-word,
+  [style*="factoryChevron"] {
     animation: none !important;
   }
   html {

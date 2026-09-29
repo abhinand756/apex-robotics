@@ -85,11 +85,6 @@ export function Sections({ register }: { register: Register }) {
             <HudBadge tone="warn">LIVE PRODUCTION</HudBadge>
           </div>
         </motion.div>
-
-        <h1 className="heading-tech flex flex-col text-[16vw] leading-[0.88] sm:text-[11vw] lg:text-[8.5vw]">
-          <motion.span initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.7, ease: [0.22, 1, 0.36, 1] }} className="gradient-text">INTELLIGENCE,</motion.span>
-          <motion.span initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4, duration: 0.7 }} className="signal-glow text-signal">BUILT.</motion.span>
-        </h1>
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.7 }}
           className="mt-6 max-w-md text-[13px] leading-relaxed tracking-wide text-dim sm:max-w-[620px] sm:text-sm"
