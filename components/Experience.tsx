@@ -16,13 +16,13 @@ import { HomepageHero } from "./homepage/HomepageHero";
 const PAGE_HEIGHT_VH = 980;
 const HERO_END_P = 0.26;
 
-/* Factory-entry curtain. The gradient begins rising just before the hero hands
-   off, holds at full opacity across the crossfade, then dissolves once the
-   manufacturing bay is established. */
-const CURTAIN_IN = 0.244;
-const CURTAIN_UP = 0.272;
-const CURTAIN_PEAK = 0.282;
-const CURTAIN_OUT = 0.332;
+/* Factory-entry curtain. The gradient rises quickly right as hero ends,
+   holds briefly, and dissolves immediately so the manufacturing bay is established
+   with minimum scroll distance. */
+const CURTAIN_IN = 0.252;
+const CURTAIN_UP = 0.257;
+const CURTAIN_PEAK = 0.259;
+const CURTAIN_OUT = 0.265;
 
 const smoothstep = (e0: number, e1: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
@@ -68,10 +68,9 @@ export function Experience() {
   }, []);
 
   /* Enter Manufacturing Process (Smooth scroll to Layer 2).
-     Target sits past CURTAIN_OUT so the gradient transition fully plays out
-     instead of parking the viewport on a half-faded curtain. */
+     Target sits right as manufacturing bay starts without any curtain delay. */
   const enterManufacturing = useCallback(() => {
-    const targetY = maxScroll() * (HERO_END_P + 0.075);
+    const targetY = maxScroll() * (HERO_END_P + 0.008);
     window.scrollTo({ top: targetY, behavior: "smooth" });
   }, [maxScroll]);
 
@@ -180,9 +179,8 @@ export function Experience() {
   const pHero = Math.min(1.0, Math.max(0.0, pUi / HERO_END_P));
   const pFactory = Math.min(1.0, Math.max(0.0, (pUi - HERO_END_P) / (1.0 - HERO_END_P)));
 
-  // Layer transition blend — wide crossfade so there is no pop or lag
-  // Hero fades OUT over a 0.08 range after HERO_END_P, Manufacturing fades IN over same range
-  const FADE_W = 0.08;
+  // Layer transition blend — fast, seamless crossfade
+  const FADE_W = 0.01;
   const heroOpacity = pUi < HERO_END_P ? 1 : Math.max(0, 1 - (pUi - HERO_END_P) / FADE_W);
   const manufacturingOpacity = pUi < HERO_END_P ? 0 : Math.min(1, (pUi - HERO_END_P) / FADE_W);
   const inManufacturing = pUi >= HERO_END_P;
@@ -208,7 +206,7 @@ export function Experience() {
           opacity: heroOpacity,
           pointerEvents: heroOpacity > 0.05 ? "auto" : "none",
           visibility: heroOpacity > 0 ? "visible" : "hidden",
-          transition: "opacity 0.6s ease, visibility 0.6s ease",
+          transition: "opacity 0.15s ease, visibility 0.15s ease",
         }}
       >
         <HomepageHero
@@ -226,7 +224,7 @@ export function Experience() {
         style={{
           opacity: manufacturingOpacity,
           visibility: manufacturingOpacity > 0 ? "visible" : "hidden",
-          transition: "opacity 0.6s ease, visibility 0.6s ease",
+          transition: "opacity 0.15s ease, visibility 0.15s ease",
         }}
       >
         <span id="manufacturing-process" className="absolute -top-10 opacity-0 pointer-events-none" />
@@ -256,10 +254,10 @@ export function Experience() {
 
         {/* 3D robot & futuristic manufacturing systems */}
         <div
-          className={`fixed inset-0 z-[1] transition-opacity duration-700 ${
+          className={`fixed inset-0 z-[1] transition-opacity duration-500 ${
             orbitActive ? "pointer-events-auto cursor-grab active:cursor-grabbing" : "pointer-events-none"
           }`}
-          style={{ opacity: pFactory > 0.04 ? 1 : Math.max(0, (pFactory - 0.01) / 0.03) }}
+          style={{ opacity: pFactory > 0.003 ? 1 : Math.max(0, pFactory / 0.003) }}
         >
           <Scene3D
             p={pFactory}
@@ -272,7 +270,7 @@ export function Experience() {
         </div>
 
         {/* Interactive HUD controls in 3D Manufacturing Bay */}
-        {pFactory > 0.04 && (
+        {pFactory > 0.003 && (
           <InspectionToolbar
             p={pFactory}
             orbitActive={orbitActive}
@@ -361,7 +359,7 @@ export function Experience() {
 
         {/* Right Section Rail Dots */}
         <AnimatePresence>
-          {pFactory > 0.04 && (
+          {pFactory > 0.003 && (
             <motion.nav
               initial={{ opacity: 0, x: 14 }}
               animate={{ opacity: 1, x: 0 }}
@@ -479,17 +477,26 @@ export function Experience() {
               />
             </div>
 
-            {/* the curtain is scroll-linked, so tell the viewer to keep going */}
+            {/* the curtain is scroll-linked, so tell the viewer to keep going or click to jump */}
             <div
-              className="factory-word relative mt-8 flex flex-col items-center gap-1.5"
+              className="factory-word pointer-events-auto cursor-pointer relative mt-8 flex flex-col items-center gap-1.5 rounded-full px-5 py-2.5 transition-transform hover:scale-105 active:scale-95"
               style={{ animationDelay: "820ms" }}
+              onClick={enterManufacturing}
+              role="button"
+              tabIndex={0}
+              aria-label="Descend to manufacturing section"
             >
-              <span className="hud-label text-mute/70">KEEP SCROLLING TO DESCEND</span>
+              <span className="hud-label text-signal/90 hover:text-signal transition-colors font-bold tracking-[0.24em]">
+                KEEP SCROLLING TO DESCEND
+              </span>
               <span
-                className="text-[11px] leading-none text-signal/80"
-                style={{ animation: "factoryChevron 1.5s ease-in-out infinite" }}
+                className="text-[12px] leading-none text-signal"
+                style={{ animation: "factoryChevron 1.2s ease-in-out infinite" }}
               >
                 &#9660;
+              </span>
+              <span className="font-mono text-[9px] tracking-[0.18em] text-white/50 uppercase mt-0.5">
+                (Click or scroll to enter)
               </span>
             </div>
           </div>
